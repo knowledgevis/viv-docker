@@ -31,12 +31,23 @@ RUN git clone https://github.com/hms-dbmi/viv.git
 WORKDIR viv
 RUN pnpm install
 RUN pnpm build
+
 #ENTRYPOINT pnpm dev --host --port 3000
 
-# start the viv server and the data server.  It is assumed we have images 
+# if the host is windows, I couldn't get the scriptfile to run, so
+# we just build the app and serve AVIVATOR using the python HTTP server
+
+EXPOSE 3000
+WORKDIR sites/avivator/dist
+ENTRYPOINT ["python","-m","http.server","3000"]
+
+# if host is linux or Mac, the Windows commands above will work. 
+# we can also do a data server as well.  Comment the lines above and 
+# uncomment the lines below.  We will run both viv and a data server.
+# by calling them from the shartup shell. It is assumed we have images 
 # stored in the /data partition on the container.  Both servers are started
 # from a shell script. 
 
-
-WORKDIR sites/avivator/dist
-ENTRYPOINT ["python","-m","http.server","3000"]
+#WORKDIR /
+#COPY . .
+#ENTRYPOINT ["sh","startup.sh"]
