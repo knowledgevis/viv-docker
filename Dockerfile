@@ -30,12 +30,13 @@ RUN apt install -y git
 RUN git clone https://github.com/hms-dbmi/viv.git
 WORKDIR viv
 RUN pnpm install
+RUN pnpm build
 #ENTRYPOINT pnpm dev --host --port 3000
 
 # start the viv server and the data server.  It is assumed we have images 
 # stored in the /data partition on the container.  Both servers are started
 # from a shell script. 
 
-WORKDIR /
-COPY . .
-ENTRYPOINT ["sh","./startup.sh"]
+
+WORKDIR sites/avivator/dist
+ENTRYPOINT ["python","-m","http.server","3000"]
